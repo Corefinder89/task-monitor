@@ -1,125 +1,157 @@
 # Task Monitor Application
 
-A Python-based system performance monitoring tool that captures running processes and saves performance data to CSV files.
+A Python-based system performance monitoring tool that captures running processes and saves performance data to CSV files. The application supports both single-snapshot and continuous monitoring modes.
 
 ## Features
 
-- 🖥️ **Process Monitoring** - Tracks top memory-consuming processes
-- 📊 **CSV Export** - Saves performance data with timestamps
-- 📝 **Centralized Logging** - Structured logging across all modules
-- ⚙️ **Configurable** - Customizable process limits and output formats
-- 🚀 **Easy to Use** - Simple command-line interface
+- 🖥️ **Process Monitoring** - Tracks top memory-consuming processes with CPU usage
+- 📊 **Dual Modes** - Single snapshot or continuous monitoring
+- 🗂️ **CSV Export** - Saves performance data with timestamps
+- 📝 **Centralized Logging** - Structured logging with detailed process information
+- ⚙️ **Configurable** - Customizable process limits and monitoring intervals
+- 🔇 **Silent Operation** - Monitoring runs without screen output for background use
 
 ## Project Structure
 
 ```
 task-monitor/
 ├── app/
-│   ├── main.py              # Main application entry point
 │   ├── requirements.txt     # Python dependencies
 │   └── src/
-│       ├── convertcsv.py    # CSV conversion functionality
-│       ├── gettasks.py      # Process monitoring
-│       ├── utils/
-│       │   ├── logger_utils.py  # Centralized logging system
-│       │   └── logging_config.py # Logging configuration
+│       ├── snapshotcsv.py    # CSV generation and monitoring orchestration
+│       ├── gettasks.py      # Process data collection and monitoring
+│       └── utils/
+│           ├── logger_utils.py    # Centralized logging system
+│           ├── logging_config.py  # Logging configuration
+│           └── __init__.py
 ├── logs/                    # Application log files (auto-created)
-├── run.py                   # Simple runner script
-├── start.sh                 # Bash startup script
-└── performance-monitor.csv  # Generated CSV output (after running)
+├── run.py                   # Main application entry point
+└── start.sh                 # Bash startup script
 ```
+
+## Generated Files
+- `performance-snapshot.csv` - Single snapshot data
+- `performance-monitoring.csv` - Continuous monitoring data
 
 ## Quick Start
 
-### Option 1: Using the startup script (Recommended)
+### Option 1: Using Python directly (Recommended)
 ```bash
-# Make sure the script is executable (already done)
-./start.sh
+# Take a single performance snapshot
+python3 run.py --snapshot
 
-# Or with options
-./start.sh --processes 15 --log-level DEBUG
+# Start continuous monitoring
+python3 run.py --monitor
+
+# Custom options
+python3 run.py --snapshot --limit 10
+python3 run.py --monitor --limit 15 --interval 5
 ```
 
-### Option 2: Using Python directly
+### Option 2: Using the startup script
 ```bash
-# Run with default settings
-python3 run.py
-
-# Or run the main application directly
-python3 app/main.py
-
-# With custom options
-python3 app/main.py --processes 25 --log-level INFO --output my-performance.csv
+# Note: You may need to modify start.sh for new command structure
+./start.sh
 ```
 
 ## Command Line Options
 
 ```bash
-python3 app/main.py [OPTIONS]
+python3 run.py {--snapshot|--monitor} [OPTIONS]
 
-Options:
-  -h, --help            Show help message
-  -l, --log-level       Set logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-  -f, --log-file        Specify log file path
-  -p, --processes       Number of top processes to monitor (default: 20)
-  -o, --output          Output CSV file name (default: performance-monitor.csv)
-  --version            Show version information
+Required (choose one):
+  --snapshot            Take a single performance snapshot and exit
+  --monitor             Start continuous monitoring mode (stop with Ctrl+C)
+
+Optional arguments:
+  -h, --help           Show help message
+  --limit LIMIT        Number of top processes to monitor (default: 20)
+  --interval INTERVAL  Monitoring refresh interval in seconds (default: 2, only for --monitor)
+```
 ```
 
 ## Usage Examples
 
-### Basic Usage
+### Snapshot Mode
 ```bash
-# Monitor top 20 processes (default)
-python3 run.py
+# Quick snapshot with default settings (top 20 processes)
+python3 run.py --snapshot
+
+# Snapshot with fewer processes
+python3 run.py --snapshot --limit 10
+
+# Snapshot with more processes  
+python3 run.py --snapshot --limit 50
 ```
 
-### Advanced Usage
+### Monitoring Mode
 ```bash
-# Monitor top 10 processes with debug logging
-python3 app/main.py --processes 10 --log-level DEBUG
+# Start continuous monitoring (default: top 20 processes, 2-second interval)
+python3 run.py --monitor
 
-# Save to custom file with log file
-python3 app/main.py --output "system-report.csv" --log-file "logs/debug.log"
+# Custom monitoring settings
+python3 run.py --monitor --limit 15 --interval 5
 
-# Silent operation (errors only)
-python3 app/main.py --log-level ERROR
+# Light monitoring (fewer processes, longer interval for low resource usage)
+python3 run.py --monitor --limit 5 --interval 10
 ```
+
+> **Note**: Monitoring mode runs silently and logs detailed process information. Stop with Ctrl+C.
 
 ## Output
 
 The application generates:
 
-1. **CSV File**: `performance-monitor.csv` (or custom name)
-   - Columns: Timestamp, PID, Name, Memory (MB)
-   - Sorted by memory usage (highest first)
+### CSV Files
+- **Snapshot Mode**: `performance-snapshot.csv`
+  - Single timestamp with top memory processes
+  - Columns: Timestamp, PID, Name, Memory (MB)
 
-2. **Log Files**: In the `logs/` directory
-   - Console output with timestamps
-   - Optional file logging
+- **Monitoring Mode**: `performance-monitoring.csv` 
+  - Continuous data collection with timestamps
+  - Columns: Timestamp, PID, Name, Memory (MB), CPU %
+  - Data appended every monitoring interval
+
+### Logging Output
+- **Console Logging**: Real-time status messages and process details
+- **File Logging**: Structured logs in `logs/task-monitor.log` (auto-created)
+- **Process Details**: Individual process polling information (PID, name, memory, CPU)
 
 ## Sample Output
 
-### Console Output
+### Console Output - Snapshot Mode
 ```
-2026-02-07 13:45:23 - __main__ - INFO - ============================================================
-2026-02-07 13:45:23 - __main__ - INFO - 🖥️  TASK MONITOR APPLICATION STARTING
-2026-02-07 13:45:23 - __main__ - INFO - ============================================================
-2026-02-07 13:45:23 - __main__ - INFO - 📊 Collecting system process data...
-2026-02-07 13:45:23 - process_monitor - INFO - Collected 156 processes, 23 access errors, returning top 20
-2026-02-07 13:45:23 - __main__ - INFO - ✅ Collected 20 processes
-2026-02-07 13:45:23 - __main__ - INFO - 💾 Total memory usage: 2847.32 MB
-2026-02-07 13:45:23 - __main__ - INFO - 💾 Saving performance data to CSV...
-2026-02-07 13:45:23 - csv_converter - INFO - Data successfully written to performance-monitor.csv
-2026-02-07 13:45:23 - __main__ - INFO - 🎉 Application completed successfully!
+INFO - 📊 Taking performance snapshot...
+INFO - Collected 156 processes, 23 access errors, returning top 20
+INFO - Data successfully written to performance-snapshot.csv
+INFO - ✅ Snapshot saved to performance-snapshot.csv
 ```
 
-### CSV Output
+### Console Output - Monitoring Mode
+```
+INFO - 🔄 Starting continuous monitoring mode...
+INFO - 📊 Monitoring top 20 processes every 2 seconds
+INFO - Polled process: Chrome (PID: 1234) - Memory: 512.45 MB, CPU: 3.2%
+INFO - Polled process: VSCode (PID: 5678) - Memory: 387.21 MB, CPU: 1.8%
+INFO - Polled process: Python (PID: 9012) - Memory: 156.78 MB, CPU: 0.5%
+...
+INFO - ✅ Monitoring completed
+```
+
+### CSV Output - Snapshot
 ```csv
 Timestamp,PID,Name,Memory (MB)
 2026-02-07 13:45:23,1234,Chrome,512.45
 2026-02-07 13:45:23,5678,VSCode,387.21
 2026-02-07 13:45:23,9012,Python,156.78
+```
+
+### CSV Output - Monitoring  
+```csv
+Timestamp,PID,Name,Memory (MB),CPU %
+2026-02-07 13:45:23,1234,Chrome,512.45,3.2
+2026-02-07 13:45:25,1234,Chrome,514.12,2.8
+2026-02-07 13:45:27,1234,Chrome,515.67,4.1
 ```
 
 ## Requirements
@@ -138,38 +170,69 @@ pip install psutil
 
 ## Development
 
+### Project Architecture
+- **`run.py`**: Main entry point with command-line interface
+- **`app/src/snapshotcsv.py`**: CSV generation and monitoring orchestration
+- **`app/src/gettasks.py`**: Process data collection with detailed logging
+- **`app/src/utils/`**: Centralized logging utilities
+
 ### Adding New Features
 1. Add new modules in `app/src/`
-2. Use the centralized logger: `from app.src.utils import get_logger`
-3. Update the main application in `app/main.py`
+2. Use the centralized logger: `from app.src.utils.logger_utils import get_logger`
+3. Update the main application in `run.py`
 
-### Logging Configuration
+### Logging System
+The application uses a centralized logging system that provides:
+- **Console output**: Real-time status and process information  
+- **File logging**: Structured logs with timestamps in `logs/`
+- **Process monitoring**: Detailed logging of each polled process (name, PID, memory, CPU)
+- **Error tracking**: Debug-level logging for process access errors
+
 Modify `app/src/utils/logging_config.py` to customize:
-- Log levels
+- Log levels and formatting
 - Output destinations (console, file, both)
-- Log formatting
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **Permission Errors**: Some processes may not be accessible
-   - This is normal and logged as debug messages
+   - This is normal and logged at debug level
    - The application continues with accessible processes
+   - Use higher `--limit` values to ensure you get enough data
 
 2. **Python Path Issues**: 
-   - Use the provided `run.py` or `start.sh` scripts
-   - They handle path configuration automatically
+   - Always use `python3 run.py` from the project root directory
+   - The script handles Python path configuration automatically
 
 3. **Missing Dependencies**:
    ```bash
-   pip install psutil
+   cd task-monitor
+   pip install -r app/requirements.txt
    ```
 
-### Debug Mode
-```bash
-python3 app/main.py --log-level DEBUG
-```
+4. **Mode Selection**: 
+   - You must choose either `--snapshot` or `--monitor`
+   - Both modes cannot be used simultaneously
+   
+5. **Monitoring Not Stopping**:
+   - Use Ctrl+C to gracefully stop monitoring mode
+   - Data will be saved before exit
+
+### Debug Information
+The application provides detailed logging. For troubleshooting:
+
+1. **Check process access**: Some processes may be restricted
+   ```bash
+   # Run with more processes to account for access denials
+   python3 run.py --snapshot --limit 50
+   ```
+
+2. **Verify CSV output**: Check generated files in project directory
+   - `performance-snapshot.csv` for snapshot mode
+   - `performance-monitoring.csv` for monitoring mode
+
+3. **Review logs**: Check `logs/task-monitor.log` for detailed information
 
 ## License
 

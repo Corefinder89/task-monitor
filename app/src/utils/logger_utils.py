@@ -91,6 +91,11 @@ class TaskMonitorLogger:
         return cls.get_logger('csv_converter')
     
     @classmethod
+    def get_snapshot_logger(cls):
+        """Get a specific logger for snapshot operations"""
+        return cls.get_logger('csv_snapshot')
+    
+    @classmethod
     def get_process_logger(cls):
         """Get a specific logger for process monitoring"""
         return cls.get_logger('process_monitor')

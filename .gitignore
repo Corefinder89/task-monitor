@@ -3,3 +3,5 @@ logs/
 app/__pycache__/
 app/src/__pycache__/
 app/src/utils/__pycache__/
+performance-monitoring.csv
+performance-snapshot.csv
