@@ -1,0 +1,5 @@
+performance-monitor.csv
+logs/
+app/__pycache__/
+app/src/__pycache__/
+app/src/utils/__pycache__/
