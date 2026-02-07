@@ -6,11 +6,18 @@ from pathlib import Path
 from app.src.gettasks import GetProcesses
 from app.src.utils import TaskMonitorLogger
 
-class SnapshotCSV():
+class CSVConverter():
     def __init__(self):
         self.get_processes = GetProcesses()
-        self.output_file = "performance-snapshot.csv"
+        self.output_file = "databag/performance-snapshot.csv"
         self.logger = TaskMonitorLogger.get_snapshot_logger()
+    
+    def _ensure_databag_directory(self):
+        """Ensure the databag directory exists, create if it doesn't"""
+        databag_dir = Path('databag')
+        if not databag_dir.exists():
+            databag_dir.mkdir(parents=True, exist_ok=True)
+            self.logger.info(f"Created databag directory: {databag_dir.absolute()}")
     
     def snapshot_to_csv(self, processes):
         csv_data = "PID,Name,Memory (MB)\n"
@@ -19,8 +26,11 @@ class SnapshotCSV():
         return csv_data
     
     def write_to_csv_file(self, processes):
-        """Write process data to snapshot.csv file in write mode"""
+        """Write process data to performance-snapshot.csv file in write mode"""
         try:
+            # Ensure databag directory exists
+            self._ensure_databag_directory()
+            
             with open(self.output_file, mode='w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
                 
@@ -47,6 +57,9 @@ class SnapshotCSV():
     def append_to_csv_file(self, timestamp, processes):
         """Append process data to CSV file (for monitoring mode)"""
         try:
+            # Ensure databag directory exists
+            self._ensure_databag_directory()
+            
             file_exists = Path(self.output_file).exists()
             
             with open(self.output_file, mode='a', newline='', encoding='utf-8') as file:
@@ -99,7 +112,7 @@ class SnapshotCSV():
         self.logger.info("Press Ctrl+C to stop monitoring")
         
         # Set output file for monitoring
-        self.output_file = "performance-monitoring.csv"
+        self.output_file = "databag/performance-monitoring.csv"
         
         try:
             while True:

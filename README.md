@@ -18,7 +18,7 @@ task-monitor/
 ├── app/
 │   ├── requirements.txt     # Python dependencies
 │   └── src/
-│       ├── snapshotcsv.py    # CSV generation and monitoring orchestration
+│       ├── csvconverter.py   # CSV generation and monitoring orchestration
 │       ├── gettasks.py      # Process data collection and monitoring
 │       └── utils/
 │           ├── logger_utils.py    # Centralized logging system
@@ -172,7 +172,7 @@ pip install psutil
 
 ### Project Architecture
 - **`run.py`**: Main entry point with command-line interface
-- **`app/src/snapshotcsv.py`**: CSV generation and monitoring orchestration
+- **`app/src/csvconverter.py`**: CSV generation and monitoring orchestration
 - **`app/src/gettasks.py`**: Process data collection with detailed logging
 - **`app/src/utils/`**: Centralized logging utilities
 

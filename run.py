@@ -11,7 +11,7 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 # Import required modules
-from app.src.snapshotcsv import SnapshotCSV
+from app.src.csvconverter import CSVConverter
 from app.src.utils.logger_utils import get_logger
 
 # Setup logger
@@ -32,15 +32,15 @@ def main():
     
     args = parser.parse_args()
     
-    # Create CSV snapshot generator
-    csv_snapshot = SnapshotCSV()
+    # Create CSV converter
+    csv_converter = CSVConverter()
     
     if args.snapshot:
         # Run single snapshot
         logger.info("📊 Taking performance snapshot...")
-        success = csv_snapshot.save_performance_data(limit=args.limit)
+        success = csv_converter.save_performance_data(limit=args.limit)
         if success:
-            logger.info(f"✅ Snapshot saved to {csv_snapshot.output_file}")
+            logger.info(f"✅ Snapshot saved to {csv_converter.output_file}")
         else:
             logger.error("❌ Snapshot failed")
             return 1
@@ -48,7 +48,7 @@ def main():
         # Run monitoring mode
         logger.info(f"🔄 Starting continuous monitoring mode...")
         logger.info(f"📊 Monitoring top {args.limit} processes every {args.interval} seconds")
-        success = csv_snapshot.start_monitoring(limit=args.limit, refresh_interval=args.interval)
+        success = csv_converter.start_monitoring(limit=args.limit, refresh_interval=args.interval)
         if success:
             logger.info("✅ Monitoring completed")
         else:
