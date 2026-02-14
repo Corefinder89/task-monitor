@@ -81,6 +81,76 @@
         </div>
     </div>
 
+    <script>
+        // Define refresh functions immediately in HTML to ensure they're always available
+        console.log('🔧 Defining inline refresh functions...');
+        
+        function refreshChart(chartType) {
+            console.log('🔄 Inline refreshChart called with:', chartType);
+            
+            if (window.dashboard && typeof window.dashboard.refreshChart === 'function') {
+                console.log('✅ Dashboard available, calling method');
+                window.dashboard.refreshChart(chartType);
+            } else {
+                console.warn('⏳ Dashboard not ready, retrying...');
+                alert('Dashboard is still loading. Please wait a moment and try again.');
+                
+                // Retry after a delay
+                setTimeout(() => {
+                    if (window.dashboard && typeof window.dashboard.refreshChart === 'function') {
+                        window.dashboard.refreshChart(chartType);
+                    } else {
+                        alert('Dashboard failed to load. Please refresh the page.');
+                    }
+                }, 1000);
+            }
+        }
+        
+        function refreshAllCharts() {
+            console.log('🔄 Inline refreshAllCharts called');
+            
+            if (window.dashboard && typeof window.dashboard.refreshAllCharts === 'function') {
+                console.log('✅ Dashboard available, calling method');
+                window.dashboard.refreshAllCharts();
+            } else {
+                console.warn('⏳ Dashboard not ready, retrying...');
+                alert('Dashboard is still loading. Please wait a moment and try again.');
+                
+                // Retry after a delay
+                setTimeout(() => {
+                    if (window.dashboard && typeof window.dashboard.refreshAllCharts === 'function') {
+                        window.dashboard.refreshAllCharts();
+                    } else {
+                        alert('Dashboard failed to load. Please refresh the page.');
+                    }
+                }, 1000);
+            }
+        }
+        
+        function toggleAutoRefresh() {
+            console.log('🔄 Inline toggleAutoRefresh called');
+            
+            if (window.dashboard && typeof window.dashboard.toggleAutoRefresh === 'function') {
+                console.log('✅ Dashboard available, calling method');
+                window.dashboard.toggleAutoRefresh();
+            } else {
+                console.warn('⏳ Dashboard not ready, retrying...');
+                alert('Dashboard is still loading. Please wait a moment and try again.');
+                
+                // Retry after a delay
+                setTimeout(() => {
+                    if (window.dashboard && typeof window.dashboard.toggleAutoRefresh === 'function') {
+                        window.dashboard.toggleAutoRefresh();
+                    } else {
+                        alert('Dashboard failed to load. Please refresh the page.');
+                    }
+                }, 1000);
+            }
+        }
+        
+        console.log('✅ Inline refresh functions defined');
+    </script>
+
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
 </html>

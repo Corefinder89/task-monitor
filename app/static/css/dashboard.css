@@ -87,6 +87,8 @@ header h1 {
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     overflow: hidden;
     transition: transform 0.3s ease;
+    position: relative;
+    padding-bottom: 60px;
 }
 
 .chart-container:hover {
@@ -109,7 +111,8 @@ header h1 {
     width: 100%;
     height: 400px;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
+    z-index: 1;
 }
 
 /* D3.js specific styles */
@@ -169,7 +172,7 @@ header h1 {
 
 .refresh-btn {
     display: block;
-    margin: 15px auto;
+    margin: 10px auto 15px auto;
     padding: 8px 20px;
     background: #667eea;
     color: white;
@@ -178,6 +181,9 @@ header h1 {
     cursor: pointer;
     font-size: 0.9rem;
     transition: background 0.3s ease;
+    position: relative;
+    z-index: 1002;
+    pointer-events: auto;
 }
 
 .refresh-btn:hover {

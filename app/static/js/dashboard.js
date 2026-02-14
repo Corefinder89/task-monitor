@@ -1,4 +1,7 @@
 // Dashboard JavaScript for D3.js Nightingale Charts
+// Note: Global refresh functions are defined inline in HTML for immediate availability
+
+// Dashboard JavaScript for D3.js Nightingale Charts
 class TaskMonitorDashboard {
     constructor() {
         this.charts = {};
@@ -74,10 +77,8 @@ class TaskMonitorDashboard {
     }
     
     setupEventListeners() {
-        // Global refresh button
-        window.refreshAllCharts = () => this.refreshAllCharts();
-        window.toggleAutoRefresh = () => this.toggleAutoRefresh();
-        window.refreshChart = (chartType) => this.refreshChart(chartType);
+        // Event listeners are set up, global functions defined above
+        console.log('✅ Event listeners set up');
     }
     
     createNightingaleChart(data, title, containerElement, unit = 'MB') {
@@ -96,7 +97,7 @@ class TaskMonitorDashboard {
         const container = d3.select(containerElement);
         const width = 650;
         const height = 450;
-        const margin = { top: 70, right: 220, bottom: 50, left: 50 };
+        const margin = { top: 70, right: 50, bottom: 50, left: 50 };
         const innerRadius = 35;
         const outerRadius = Math.min(width - margin.left - margin.right, height - margin.top - margin.bottom) / 2 * 0.65;
         
@@ -266,62 +267,6 @@ class TaskMonitorDashboard {
             .duration(1000)
             .delay((d, i) => i * 200)
             .style("opacity", 1);
-
-        
-        // Add legend with better spacing and scrollable area for many items
-        const legendStartY = Math.max(50, height / 2 - data.length * 9);
-        const legend = svg.append("g")
-            .attr("transform", `translate(${width - margin.right + 30}, ${legendStartY})`);
-        
-        // Legend title
-        legend.append("text")
-            .attr("x", 0)
-            .attr("y", -10)
-            .style("font-size", "12px")
-            .style("font-weight", "bold")
-            .style("fill", "#555")
-            .text("Processes");
-        
-        const legendItems = legend.selectAll(".legend-item")
-            .data(data.slice(0, 15)) // Limit legend items to prevent overflow
-            .enter().append("g")
-            .attr("class", "legend-item")
-            .attr("transform", (d, i) => `translate(0, ${i * 18})`);
-        
-        legendItems.append("rect")
-            .attr("width", 12)
-            .attr("height", 12)
-            .attr("y", -6)
-            .style("fill", (d, i) => colorScale(i))
-            .style("stroke", "#fff")
-            .style("stroke-width", "1px")
-            .style("rx", 2);
-        
-        legendItems.append("text")
-            .attr("x", 18)
-            .attr("y", 0)
-            .attr("dy", "0.35em")
-            .attr("class", "legend-text")
-            .style("font-size", "11px")
-            .style("fill", "#333")
-            .text(d => {
-                const maxLength = 15;
-                return d.name.length > maxLength ? d.name.substring(0, maxLength) + '...' : d.name;
-            })
-            .append("title") // Tooltip for full text
-            .text(d => `${d.name}: ${d.value}${unit}`);
-        
-        // Show "and X more" if there are more items
-        if (data.length > 15) {
-            legend.append("text")
-                .attr("x", 18)
-                .attr("y", 15 * 18)
-                .attr("dy", "0.35em")
-                .style("font-size", "10px")
-                .style("fill", "#888")
-                .style("font-style", "italic")
-                .text(`and ${data.length - 15} more...`);
-        }
     }
     
     async loadChartData(endpoint) {
