@@ -6,3 +6,4 @@ app/src/utils/__pycache__/
 performance-monitoring.csv
 performance-snapshot.csv
 databag/
+venv/
