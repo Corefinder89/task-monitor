@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Check if app/logs directory exists, if not create it
+if [ ! -d "app/logs" ]; then
+    echo "📦 Creating app/logs directory..."
+    mkdir -p app/logs
+fi
+
+# Check if app/logs directory exists, if not create it
+if [ ! -d "databag" ]; then
+    echo "📦 Creating databag directory..."
+    mkdir -p databag
+fi
+
 # Task Monitor Dashboard Startup Script
 echo "🚀 Starting Task Monitor Dashboard..."
 
