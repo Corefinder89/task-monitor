@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Task Monitor Dashboard Startup Script
-echo "🚀 Starting Task Monitor Dashboard with Apache ECharts..."
+echo "🚀 Starting Task Monitor Dashboard..."
 
 # Change to app directory
 cd "$(dirname "$0")/app"
