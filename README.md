@@ -54,6 +54,39 @@ python3 run.py --monitor --limit 15 --interval 5
 ./start.sh
 ```
 
+## 📊 Web Dashboard (NEW!)
+
+We now include a beautiful web-based dashboard using **Apache ECharts** to visualize your performance data with interactive nightingale (rose) charts!
+
+### Features
+- 🌹 **Nightingale Charts** - Beautiful rose/radial charts for memory and CPU data
+- 📱 **Responsive Design** - Works perfectly on desktop, tablet, and mobile
+- 🔄 **Real-time Updates** - Auto-refresh every 30 seconds or manual refresh
+- 📈 **Multiple Views** - Separate charts for monitoring and snapshot data
+- 🎨 **Modern UI** - Clean gradient design with smooth animations
+
+### Quick Dashboard Setup
+```bash
+# Option 1: Use the convenient startup script
+./start_dashboard.sh
+
+# Option 2: Manual setup
+cd app
+pip install -r requirements.txt
+python backend_server.py
+```
+
+Then open your browser and navigate to: **http://localhost:5000**
+
+### Dashboard Requirements
+- Existing CSV files in `databag/` directory (generated from monitoring)
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- Python Flask dependencies (automatically installed)
+
+> 💡 **Tip**: First run some monitoring to generate CSV data, then launch the dashboard to see your beautiful charts!
+
+For detailed dashboard setup and customization instructions, see [ECHARTS_README.md](ECHARTS_README.md)
+
 ## Command Line Options
 
 ```bash
