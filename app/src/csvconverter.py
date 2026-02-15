@@ -114,6 +114,12 @@ class CSVConverter():
         # Set output file for monitoring
         self.output_file = "databag/performance-monitoring.csv"
         
+        # Clear existing monitoring file if it exists
+        monitoring_file = Path(self.output_file)
+        if monitoring_file.exists():
+            monitoring_file.unlink()
+            self.logger.info(f"Cleared existing monitoring file: {self.output_file}")
+        
         try:
             while True:
                 timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')

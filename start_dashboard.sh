@@ -46,10 +46,10 @@ fi
 
 # Step 2: Start background monitoring process
 echo "🔄 Starting background monitoring process..."
-python run.py --monitor --limit 20 --interval 2 &
+python run.py --monitor --limit 20 --interval 10 &
 MONITOR_PID=$!
 echo "   📈 Background monitoring started (PID: $MONITOR_PID)"
-echo "   📊 Collecting data every 2 seconds"
+echo "   📊 Collecting data every 10 seconds"
 
 # Function to cleanup on exit
 cleanup() {
