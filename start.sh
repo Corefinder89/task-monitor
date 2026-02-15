@@ -1,4 +1,4 @@
-#!/bin/bash
+'v    #!/bin/bash
 # Task Monitor - Quick Start Script
 
 echo "🖥️  Task Monitor Application"

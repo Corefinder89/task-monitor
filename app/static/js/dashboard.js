@@ -41,22 +41,13 @@ class TaskMonitorDashboard {
         }
         console.log('✅ D3.js library is available');
 
-        // Initialize Memory Monitoring Chart (Nightingale/Rose Chart)
-        const memoryMonitoringEl = document.getElementById('memory-monitoring-chart');
-        if (memoryMonitoringEl) {
-            this.charts.memoryMonitoring = { element: memoryMonitoringEl };
-            console.log('✅ Memory monitoring chart container ready');
+        // Initialize Main Memory Chart (Dynamic)
+        const memoryChartEl = document.getElementById('memory-chart');
+        if (memoryChartEl) {
+            this.charts.memoryChart = { element: memoryChartEl };
+            console.log('✅ Main memory chart container ready');
         } else {
-            console.error('❌ memory-monitoring-chart element not found');
-        }
-
-        // Initialize Memory Snapshot Chart (Nightingale/Rose Chart)
-        const memorySnapshotEl = document.getElementById('memory-snapshot-chart');
-        if (memorySnapshotEl) {
-            this.charts.memorySnapshot = { element: memorySnapshotEl };
-            console.log('✅ Memory snapshot chart container ready');
-        } else {
-            console.error('❌ memory-snapshot-chart element not found');
+            console.error('❌ memory-chart element not found');
         }
 
         // Initialize CPU Usage Chart (Nightingale/Rose Chart)
@@ -88,31 +79,69 @@ class TaskMonitorDashboard {
 
     setupViewSelector() {
         const viewSelector = document.querySelectorAll('input[name="view-type"]');
+
+        if (viewSelector.length === 0) {
+            console.warn('⚠️ View selector radio buttons not found');
+            return;
+        }
+
         viewSelector.forEach(radio => {
             radio.addEventListener('change', (event) => {
+                this.updateViewSelectorStyles();
                 this.switchView(event.target.value);
             });
         });
 
-        // Initialize with monitoring view
+        // Initialize with monitoring view and update styles
+        this.updateViewSelectorStyles();
         this.switchView('monitoring');
+    }
+
+    updateViewSelectorStyles() {
+        const viewSelector = document.querySelectorAll('input[name="view-type"]');
+        viewSelector.forEach(radio => {
+            const option = radio.closest('.selector-option');
+            if (option) {
+                if (radio.checked) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            }
+        });
     }
 
     switchView(viewType) {
         console.log(`🔄 Switching to ${viewType} view`);
 
-        const monitoringView = document.getElementById('monitoring-view');
-        const snapshotView = document.getElementById('snapshot-view');
+        const memoryTitle = document.getElementById('memory-chart-title');
+        const memoryRefreshBtn = document.getElementById('memory-refresh-btn');
+        const cpuContainer = document.getElementById('cpu-chart-container');
+
+        if (!memoryTitle || !memoryRefreshBtn || !cpuContainer) {
+            console.error('❌ Chart elements not found in DOM');
+            return;
+        }
 
         if (viewType === 'snapshot') {
-            monitoringView.style.display = 'none';
-            snapshotView.style.display = 'grid';
-            // Refresh snapshot charts when switching to snapshot view
+            // Update title and button for snapshot
+            memoryTitle.textContent = 'Memory Usage - Performance Snapshot';
+            memoryRefreshBtn.setAttribute('onclick', "refreshChart('memory-snapshot')");
+
+            // CPU chart stays visible
+            cpuContainer.style.display = 'block';
+
+            // Refresh snapshot chart (will render in main container)
             this.refreshChart('memory-snapshot');
         } else {
-            monitoringView.style.display = 'grid';
-            snapshotView.style.display = 'none';
-            // Refresh monitoring charts when switching to monitoring view
+            // Update title and button for monitoring
+            memoryTitle.textContent = 'Memory Usage - Performance Monitoring';
+            memoryRefreshBtn.setAttribute('onclick', "refreshChart('memory-monitoring')");
+
+            // CPU chart stays visible
+            cpuContainer.style.display = 'block';
+
+            // Refresh monitoring charts
             this.refreshChart('memory-monitoring');
             this.refreshChart('cpu-usage');
         }
@@ -405,12 +434,12 @@ class TaskMonitorDashboard {
             case 'memory-monitoring':
                 endpoint = 'memory-monitoring';
                 chartKey = 'memoryMonitoring';
-                chartId = 'memory-monitoring-chart';
+                chartId = 'memory-chart';  // Use main memory chart container
                 break;
             case 'memory-snapshot':
                 endpoint = 'memory-snapshot';
                 chartKey = 'memorySnapshot';
-                chartId = 'memory-snapshot-chart';
+                chartId = 'memory-chart';  // Use main memory chart container
                 break;
             case 'cpu-usage':
                 endpoint = 'cpu-usage';
@@ -432,12 +461,13 @@ class TaskMonitorDashboard {
             console.log(`🎨 Creating D3.js chart for ${chartType}`);
 
             const containerElement = document.getElementById(chartId);
+
             if (containerElement) {
                 this.createNightingaleChart(result.data, result.title, containerElement, unit);
                 this.updateTimestamp(result.timestamp);
                 console.log(`✅ Chart ${chartType} updated successfully`);
             } else {
-                console.error(`❌ Container ${chartId} not found`);
+                console.error(`❌ Container ${chartId} not found for ${chartType}`);
                 this.showError(chartId, 'Chart container not found');
             }
         } else {
@@ -448,11 +478,13 @@ class TaskMonitorDashboard {
 
     async refreshAllCharts() {
         // Get current view
-        const currentView = document.querySelector('input[name="view-type"]:checked')?.value || 'monitoring';
+        const currentViewElement = document.querySelector('input[name="view-type"]:checked');
+        const currentView = currentViewElement ? currentViewElement.value : 'monitoring';
 
         let chartTypes = [];
         if (currentView === 'snapshot') {
-            chartTypes = ['memory-snapshot'];
+            // Refresh both memory snapshot and CPU (CPU stays visible)
+            chartTypes = ['memory-snapshot', 'cpu-usage'];
         } else {
             chartTypes = ['memory-monitoring', 'cpu-usage'];
         }

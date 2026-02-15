@@ -71,25 +71,18 @@
             </div>
         </div>
 
-        <div class="charts-grid" id="monitoring-view">
+        <div class="charts-grid">
             <div class="chart-container">
-                <h2>Memory Usage - Performance Monitoring</h2>
-                <div id="memory-monitoring-chart" class="chart"></div>
-                <button class="refresh-btn" onclick="refreshChart('memory-monitoring')">Refresh</button>
+                <h2 id="memory-chart-title">Memory Usage - Performance Monitoring</h2>
+                <div id="memory-chart" class="chart"></div>
+                <button class="refresh-btn" id="memory-refresh-btn"
+                    onclick="refreshChart('memory-monitoring')">Refresh</button>
             </div>
 
-            <div class="chart-container">
+            <div class="chart-container" id="cpu-chart-container">
                 <h2>CPU Usage Distribution</h2>
                 <div id="cpu-usage-chart" class="chart"></div>
                 <button class="refresh-btn" onclick="refreshChart('cpu-usage')">Refresh</button>
-            </div>
-        </div>
-
-        <div class="charts-grid" id="snapshot-view" style="display: none;">
-            <div class="chart-container">
-                <h2>Memory Usage - Performance Snapshot</h2>
-                <div id="memory-snapshot-chart" class="chart"></div>
-                <button class="refresh-btn" onclick="refreshChart('memory-snapshot')">Refresh</button>
             </div>
         </div>
 
@@ -103,17 +96,17 @@
     <script>
         // Define refresh functions immediately in HTML to ensure they're always available
         console.log('🔧 Defining inline refresh functions...');
-        
+
         function refreshChart(chartType) {
             console.log('🔄 Inline refreshChart called with:', chartType);
-            
+
             if (window.dashboard && typeof window.dashboard.refreshChart === 'function') {
                 console.log('✅ Dashboard available, calling method');
                 window.dashboard.refreshChart(chartType);
             } else {
                 console.warn('⏳ Dashboard not ready, retrying...');
                 alert('Dashboard is still loading. Please wait a moment and try again.');
-                
+
                 // Retry after a delay
                 setTimeout(() => {
                     if (window.dashboard && typeof window.dashboard.refreshChart === 'function') {
@@ -124,17 +117,17 @@
                 }, 1000);
             }
         }
-        
+
         function refreshAllCharts() {
             console.log('🔄 Inline refreshAllCharts called');
-            
+
             if (window.dashboard && typeof window.dashboard.refreshAllCharts === 'function') {
                 console.log('✅ Dashboard available, calling method');
                 window.dashboard.refreshAllCharts();
             } else {
                 console.warn('⏳ Dashboard not ready, retrying...');
                 alert('Dashboard is still loading. Please wait a moment and try again.');
-                
+
                 // Retry after a delay
                 setTimeout(() => {
                     if (window.dashboard && typeof window.dashboard.refreshAllCharts === 'function') {
@@ -145,17 +138,17 @@
                 }, 1000);
             }
         }
-        
+
         function toggleAutoRefresh() {
             console.log('🔄 Inline toggleAutoRefresh called');
-            
+
             if (window.dashboard && typeof window.dashboard.toggleAutoRefresh === 'function') {
                 console.log('✅ Dashboard available, calling method');
                 window.dashboard.toggleAutoRefresh();
             } else {
                 console.warn('⏳ Dashboard not ready, retrying...');
                 alert('Dashboard is still loading. Please wait a moment and try again.');
-                
+
                 // Retry after a delay
                 setTimeout(() => {
                     if (window.dashboard && typeof window.dashboard.toggleAutoRefresh === 'function') {
@@ -166,7 +159,7 @@
                 }, 1000);
             }
         }
-        
+
         console.log('✅ Inline refresh functions defined');
     </script>
 

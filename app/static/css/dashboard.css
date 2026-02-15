@@ -126,7 +126,7 @@ header h1 {
     color: #667eea;
 }
 
-.selector-option:has(input[type="radio"]:checked) {
+.selector-option.selected {
     background: #f0f4ff;
     border-color: #667eea;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
