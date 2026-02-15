@@ -163,8 +163,8 @@ class TaskMonitorDashboard {
 
         // Chart dimensions and margins - improved spacing
         const container = d3.select(containerElement);
-        const width = 700;
-        const height = 500;
+        const width = 900;
+        const height = 650;
         const margin = { top: 70, right: 80, bottom: 50, left: 20 };
         const innerRadius = 35;
         const outerRadius = Math.min(width - margin.left - margin.right, height - margin.top - margin.bottom) / 2 * 0.65;
@@ -175,26 +175,6 @@ class TaskMonitorDashboard {
             .attr("height", "100%")
             .attr("viewBox", `0 0 ${width} ${height}`)
             .attr("preserveAspectRatio", "xMidYMid meet");
-
-        // Title - left aligned to prevent cutting
-        svg.append("text")
-            .attr("x", margin.left)
-            .attr("y", 25)
-            .attr("text-anchor", "start")
-            .attr("class", "chart-title")
-            .style("font-size", "16px")
-            .style("font-weight", "bold")
-            .style("fill", "#333")
-            .text(title.length > 40 ? title.substring(0, 40) + '...' : title);
-
-        svg.append("text")
-            .attr("x", margin.left)
-            .attr("y", 45)
-            .attr("text-anchor", "start")
-            .attr("class", "chart-subtitle")
-            .style("font-size", "12px")
-            .style("fill", "#666")
-            .text("Process Performance Data");
 
         // Chart group - adjusted positioning
         const g = svg.append("g")
