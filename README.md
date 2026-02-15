@@ -1,18 +1,20 @@
 # Task Monitor Application
 
-A Python-based system performance monitoring tool that captures running processes and saves performance data to CSV files. Features a beautiful web dashboard with D3.js nightingale charts for interactive data visualization.
+A Python-based system performance monitoring tool that captures running processes and saves performance data to CSV files. Features a beautiful web dashboard with D3.js nightingale charts and **real-time view switching** between snapshot and monitoring data.
 
 ## Features
 
 - 🖥️ **Process Monitoring** - Tracks top memory-consuming processes with CPU usage
 - 🌹 **Interactive Dashboard** - Beautiful D3.js nightingale (rose) charts with external labels
-- 📊 **Dual Modes** - Single snapshot or continuous monitoring
-- 🌐 **Web Interface** - Flask-powered dashboard with real-time data visualization
+- 🔄 **View Switching** - Toggle between snapshot and monitoring views in real-time
+- 📊 **Dual Modes** - Single snapshot or continuous monitoring with integrated dashboard
+- 🌐 **Web Interface** - Flask-powered dashboard with live data visualization
 - 🗂️ **CSV Export** - Saves performance data with timestamps in databag directory
 - 📝 **Centralized Logging** - Structured logging with detailed process information
 - ⚙️ **Configurable** - Customizable process limits and monitoring intervals
 - 📱 **Responsive Design** - Works on desktop, tablet, and mobile devices
 - 🔄 **Auto-refresh** - Dashboard updates every 30 seconds or manual refresh
+- 🚀 **One-Command Startup** - Single script handles snapshot, monitoring, and dashboard
 
 ## Project Structure
 
@@ -41,35 +43,56 @@ task-monitor/
 │   └── performance-snapshot.csv
 ├── logs/                        # Application log files (auto-created)
 ├── run.py                       # Command-line monitoring tool
-└── start.sh                     # Bash startup script
+├── start.sh                     # Manual CLI script
+└── start_dashboard.sh          # Complete dashboard startup script
 ```
 
-## 🌹 Web Dashboard with D3.js Charts
+## 🌹 Web Dashboard with Real-Time View Switching
 
-Beautiful interactive dashboard featuring **nightingale (rose) charts** built with D3.js for visualizing your performance data!
+Beautiful interactive dashboard featuring **nightingale (rose) charts** built with D3.js, with **seamless switching** between snapshot and monitoring views!
+
+### 🎯 Quick Start (Recommended)
+```bash
+# One command starts everything: snapshot + monitoring + dashboard!
+./start_dashboard.sh
+```
+**Then open: http://localhost:5000**
+
+This single command will:
+1. 📸 Take a fresh performance snapshot
+2. 🔄 Start background monitoring (data collection every 2 seconds)
+3. 🌐 Launch web dashboard on http://localhost:5000
+4. ✋ Press Ctrl+C to stop everything cleanly
 
 ### Screenshots
 
-#### Main Dashboard
+#### Main Dashboard with View Selector
 ![Task Monitor Dashboard](./screenshots/dashboard-main.png)
-*Interactive D3.js nightingale charts showing memory monitoring, memory snapshots, and CPU usage*
+*Interactive dashboard with view selector toggle - switch between Monitoring and Snapshot views in real-time*
 
 #### Chart Details
 ![Nightingale Chart Close-up](./screenshots/chart-detail.png) 
 *Close-up view showing external labels and connecting lines for all processes*
 
 ### Dashboard Features
+- **🔄 View Selector** - Toggle between "Monitoring" and "Snapshot" views instantly
 - **🌹 Nightingale Charts** - Radial charts where slice radius represents data values
 - **🏷️ External Labels** - Process names and values displayed outside charts with connecting lines
-- **📊 Multiple Views** - Memory monitoring, memory snapshots, and CPU usage charts
+- **📊 Dynamic Content** - Same chart container switches between monitoring/snapshot data
 - **📱 Responsive Design** - Optimized for all screen sizes
-- **🔄 Real-time Updates** - Auto-refresh functionality with manual refresh options
+- **🔄 Real-time Updates** - Live data from background monitoring process
 - **🎨 Modern UI** - Clean gradient design with smooth D3.js animations
-- **🔧 Test Interface** - Dedicated testing page for chart development
+- **CPU Always Visible** - CPU usage chart remains available in both views
 
-### Quick Dashboard Start
+### Complete Dashboard Startup (Recommended)
 ```bash
-# Start the Flask web server
+# Start everything: snapshot + monitoring + dashboard
+./start_dashboard.sh
+```
+
+### Manual Dashboard Start
+```bash
+# Start just the Flask web server (requires existing CSV data)
 cd /path/to/task-monitor
 python app/backend_server.py
 ```
@@ -87,15 +110,21 @@ To add your own dashboard screenshots:
    python app/backend_server.py
    ```
 
-2. **Generate some data first** (if needed):
+2. **Generate fresh data**:
    ```bash
-   python3 run.py --monitor --limit 20
-   # Let it run for 30 seconds, then Ctrl+C
+   # Use the complete startup (recommended)
+   ./start_dashboard.sh
+   
+   # OR generate data manually
+   python3 run.py --snapshot --limit 20
+   python3 run.py --monitor --limit 20 --interval 2
+   # Let monitoring run for 30 seconds, then Ctrl+C
    ```
 
 3. **Open the dashboard** in your browser:
    - Main dashboard: `http://localhost:5000`
-   - Test interface: `http://localhost:5000/test-charts`
+   - Test view selector: Switch between "Monitoring" and "Snapshot" views
+   - View real-time data updates from background monitoring
 
 4. **Capture screenshots** and save them as:
    - `screenshots/dashboard-main.png` - Full dashboard view
@@ -119,29 +148,33 @@ python3 run.py --snapshot --limit 10
 python3 run.py --monitor --limit 15 --interval 5
 ```
 
-### Option 2: Using the startup script
+### Option 2: Using the startup scripts
 ```bash
-# Note: You may need to modify start.sh for new command structure
+# Complete system (recommended)
+./start_dashboard.sh
+
+# Manual CLI monitoring only
 ./start.sh
 ```
 
 ### Dashboard Requirements
 - Python Flask and dependencies (see `app/requirements.txt`)
 - Modern web browser supporting D3.js
-- CSV data files (generated from monitoring)
+- CSV data files (generated automatically by `start_dashboard.sh`)
 
-> 💡 **Tip**: First run some monitoring to generate CSV data, then launch the dashboard to see your nightingale charts!
+> **💡 Pro Tip**: Use `./start_dashboard.sh` for the complete experience with real-time data and view switching!
 
 ## API Endpoints
 
 The Flask backend provides REST API endpoints for chart data:
 
-- `GET /` - Main dashboard
-- `GET /test-charts` - Chart testing interface  
-- `GET /api/memory-monitoring` - Memory monitoring data
-- `GET /api/memory-snapshot` - Memory snapshot data
-- `GET /api/cpu-usage` - CPU usage data
+- `GET /` - Main dashboard with view selector
+- `GET /api/memory-monitoring` - Memory monitoring data (real-time)
+- `GET /api/memory-snapshot` - Memory snapshot data  
+- `GET /api/cpu-usage` - CPU usage data (real-time)
 - `GET /api/process-summary` - Process summary statistics
+
+> **Note**: API endpoints return live data when background monitoring is running via `start_dashboard.sh`
 
 ## Requirements
 
@@ -166,15 +199,32 @@ pip install flask pandas psutil
 
 ## Usage Examples
 
+### 🚀 Complete System (Recommended)
+```bash
+# Start everything with one command
+./start_dashboard.sh
+
+# This will:
+# 1. Take a fresh performance snapshot
+# 2. Start background monitoring (every 2 seconds)
+# 3. Launch web dashboard on http://localhost:5000
+# 4. Use Ctrl+C to stop everything cleanly
+```
+
 ### Web Dashboard
 ```bash
-# Start the dashboard server
+# Manual dashboard start (requires existing CSV data)
 python app/backend_server.py
 
 # Open in browser
-http://localhost:5000         # Main dashboard
-http://localhost:5000/test-charts  # Testing interface
+http://localhost:5000         # Main dashboard with view selector
 ```
+
+**Dashboard Features:**
+- 🔄 **View Selector**: Toggle between "Monitoring" and "Snapshot" views
+- 📊 **Real-time Data**: Live updates from background monitoring
+- 💻 **CPU Always Visible**: CPU usage chart available in both views
+- 🔄 **Auto-refresh**: Charts update automatically
 
 ### Command Line Monitoring
 
@@ -235,9 +285,11 @@ The application generates CSV files in the `databag/` directory:
 
 ### Web Dashboard Data
 The Flask backend processes these CSV files and serves JSON data via API endpoints:
-- Memory monitoring charts consume `performance-monitoring.csv`
-- Memory snapshot charts consume `performance-snapshot.csv` 
-- CPU usage charts extract CPU data from monitoring files
+- **Memory monitoring charts** consume real-time `performance-monitoring.csv` data
+- **Memory snapshot charts** consume `performance-snapshot.csv` data 
+- **CPU usage charts** extract live CPU data from monitoring files
+- **View selector** allows seamless switching between monitoring and snapshot data
+- **Background monitoring** (via `start_dashboard.sh`) ensures continuous data updates
 
 ### Logging Output
 - **Console Logging**: Real-time status messages and process details
@@ -310,15 +362,18 @@ pip install psutil
 ### Dashboard Development
 The web dashboard uses:
 - **Flask backend**: Serves HTML templates and processes CSV data into JSON APIs
-- **D3.js frontend**: Creates interactive nightingale charts with external labels
+- **D3.js frontend**: Creates interactive nightingale charts with view switching
+- **View Selector**: Radio buttons toggle between snapshot and monitoring data in same container
 - **Responsive CSS**: Grid layouts that adapt to different screen sizes
 - **REST APIs**: JSON endpoints for real-time chart data
+- **Background Monitoring**: Integrated data collection via `start_dashboard.sh`
 
 ### Chart Customization
 Modify `app/static/js/dashboard.js` to:
 - Adjust chart dimensions and colors
 - Change label positioning and truncation
 - Modify animation timing and effects
+- Customize view switching behavior
 - Add new chart types or data sources
 
 ### Adding New Features
@@ -328,9 +383,11 @@ Modify `app/static/js/dashboard.js` to:
 4. **Styling**: Modify `app/static/css/dashboard.css`
 
 ### Testing
-- **Chart Testing**: Use `http://localhost:5000/test-charts` for D3.js development
+- **Complete System**: Use `./start_dashboard.sh` for full integration testing
+- **View Switching**: Test toggle between Monitoring and Snapshot views
 - **API Testing**: Test endpoints with curl or browser developer tools
-- **CSV Testing**: Verify data format in `databag/` directory
+- **CSV Testing**: Verify data format and freshness in `databag/` directory
+- **Background Process**: Verify monitoring data is updating every 2 seconds
 
 ### Logging System
 The application uses a centralized logging system that provides:
@@ -349,9 +406,23 @@ Modify `app/src/utils/logging_config.py` to customize:
 
 #### Web Dashboard
 1. **Charts not loading**: 
-   - Ensure CSV files exist in `databag/` directory
-   - Run monitoring first: `python3 run.py --monitor --limit 20`
+   - Use `./start_dashboard.sh` for automatic data generation
+   - Verify background monitoring is running and updating CSV files
    - Check browser console for D3.js errors
+
+2. **View selector not working**:
+   - Check that both `performance-monitoring.csv` and `performance-snapshot.csv` exist
+   - Verify JavaScript console for errors
+   - Ensure fresh data is being generated by background monitoring
+
+3. **Stale data**:
+   ```bash
+   # Restart complete system for fresh data
+   ./start_dashboard.sh
+   
+   # Or check if background monitoring is running
+   ps aux | grep "run.py --monitor"
+   ```
 
 2. **D3.js CDN failures**:
    - Dashboard includes multiple CDN fallbacks
@@ -360,17 +431,30 @@ Modify `app/src/utils/logging_config.py` to customize:
 
 3. **Flask server issues**:
    ```bash
-   # Restart the server
+   # Restart the complete system
+   ./start_dashboard.sh
+   
+   # Or restart just the server
    python app/backend_server.py
    
    # Check if port 5000 is available
    lsof -i :5000
    ```
 
+4. **Background monitoring not running**: 
+   ```bash
+   # Check if monitoring process is active
+   ps aux | grep "run.py --monitor"
+   
+   # Restart complete system
+   ./start_dashboard.sh
+   ```
+
 4. **Empty charts**: 
-   - Generate data first with monitoring
-   - Verify CSV files contain data: `ls -la databag/`
-   - Check API endpoints: `curl http://localhost:5000/api/memory-monitoring`
+   - Use `./start_dashboard.sh` to ensure data generation
+   - Check if background monitoring is collecting data: `ls -la databag/`
+   - Verify API endpoints return data: `curl http://localhost:5000/api/memory-monitoring`
+   - Watch for real-time updates (data should refresh every 2 seconds)
 
 #### Command Line Monitoring  
 1. **Permission Errors**: Some processes may not be accessible

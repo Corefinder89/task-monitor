@@ -163,16 +163,18 @@ class TaskMonitorDashboard {
 
         // Chart dimensions and margins - improved spacing
         const container = d3.select(containerElement);
-        const width = 650;
-        const height = 450;
-        const margin = { top: 70, right: 50, bottom: 50, left: 50 };
+        const width = 700;
+        const height = 500;
+        const margin = { top: 70, right: 80, bottom: 50, left: 20 };
         const innerRadius = 35;
         const outerRadius = Math.min(width - margin.left - margin.right, height - margin.top - margin.bottom) / 2 * 0.65;
 
         // Create SVG
         const svg = container.append("svg")
-            .attr("width", width)
-            .attr("height", height);
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
 
         // Title - left aligned to prevent cutting
         svg.append("text")
@@ -196,7 +198,7 @@ class TaskMonitorDashboard {
 
         // Chart group - adjusted positioning
         const g = svg.append("g")
-            .attr("transform", `translate(${width / 2 - 90},${height / 2 + 10})`);
+            .attr("transform", `translate(${width / 2 - 150},${height / 2})`);
 
         // Calculate total for percentages
         const total = d3.sum(data, d => d.value);
@@ -219,13 +221,13 @@ class TaskMonitorDashboard {
 
         // Create arc generator for labels
         const labelArc = d3.arc()
-            .innerRadius(outerRadius + 10)
-            .outerRadius(outerRadius + 10);
+            .innerRadius(outerRadius + 40)
+            .outerRadius(outerRadius + 40);
 
         // Create arc generator for polylines
         const polylineArc = d3.arc()
-            .innerRadius(outerRadius + 5)
-            .outerRadius(outerRadius + 5);
+            .innerRadius(outerRadius + 35)
+            .outerRadius(outerRadius + 35);
 
         // Add pie slices
         const pieSlices = g.selectAll(".arc")
@@ -294,7 +296,7 @@ class TaskMonitorDashboard {
             .style("opacity", 0.7);
 
         // Add labels outside the chart with connecting lines
-        const labelRadius = outerRadius + 25;
+        const labelRadius = outerRadius + 60;
 
         // Show labels for all processes
         const pieData = pie(data);
