@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Monitor Dashboard - D3.js Nightingale Charts</title>
     <!-- Primary CDN -->
-    <script src="https://d3js.org/d3.v7.min.js" 
-            onerror="loadBackupD3()"></script>
+    <script src="https://d3js.org/d3.v7.min.js" onerror="loadBackupD3()"></script>
     <!-- Backup CDNs -->
     <script>
         function loadBackupD3() {
             console.log('Primary D3 CDN failed, trying backup...');
             const script1 = document.createElement('script');
             script1.src = 'https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js';
-            script1.onerror = function() {
+            script1.onerror = function () {
                 console.log('Backup CDN 1 failed, trying CDN 2...');
                 const script2 = document.createElement('script');
                 script2.src = 'https://unpkg.com/d3@7/dist/d3.min.js';
-                script2.onerror = function() {
+                script2.onerror = function () {
                     console.error('All D3 CDNs failed!');
                     document.body.innerHTML = '<div style="text-align:center;margin-top:50px;"><h2 style="color:red;">❌ D3.js library failed to load from all CDNs</h2><p>Please check your internet connection and refresh the page.</p></div>';
                 };
@@ -28,6 +28,7 @@
     </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -54,7 +55,23 @@
             </div>
         </div>
 
-        <div class="charts-grid">
+        <div class="view-selector">
+            <h2>Select View</h2>
+            <div class="selector-options">
+                <label class="selector-option">
+                    <input type="radio" name="view-type" value="monitoring" checked>
+                    <span class="selector-label">📊 Monitoring</span>
+                    <span class="selector-description">Real-time process monitoring</span>
+                </label>
+                <label class="selector-option">
+                    <input type="radio" name="view-type" value="snapshot">
+                    <span class="selector-label">📸 Snapshot</span>
+                    <span class="selector-description">Performance snapshot view</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="charts-grid" id="monitoring-view">
             <div class="chart-container">
                 <h2>Memory Usage - Performance Monitoring</h2>
                 <div id="memory-monitoring-chart" class="chart"></div>
@@ -62,15 +79,17 @@
             </div>
 
             <div class="chart-container">
-                <h2>Memory Usage - Performance Snapshot</h2>
-                <div id="memory-snapshot-chart" class="chart"></div>
-                <button class="refresh-btn" onclick="refreshChart('memory-snapshot')">Refresh</button>
-            </div>
-
-            <div class="chart-container">
                 <h2>CPU Usage Distribution</h2>
                 <div id="cpu-usage-chart" class="chart"></div>
                 <button class="refresh-btn" onclick="refreshChart('cpu-usage')">Refresh</button>
+            </div>
+        </div>
+
+        <div class="charts-grid" id="snapshot-view" style="display: none;">
+            <div class="chart-container">
+                <h2>Memory Usage - Performance Snapshot</h2>
+                <div id="memory-snapshot-chart" class="chart"></div>
+                <button class="refresh-btn" onclick="refreshChart('memory-snapshot')">Refresh</button>
             </div>
         </div>
 
@@ -153,4 +172,5 @@
 
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
+
 </html>
